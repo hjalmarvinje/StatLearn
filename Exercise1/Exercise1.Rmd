@@ -14,20 +14,20 @@ knitr::opts_chunk$set(echo = TRUE,tidy=TRUE,message=FALSE,warning=FALSE,strip.wh
                       cache=TRUE, size="scriptsize",fig.width=4, fig.height=3,fig.align = "center")
 ```
 
+```{r,eval=FALSE,echo=FALSE}
+install.packages("knitr")     # probably already installed
+install.packages("rmarkdown") # probably already installed
+install.packages("ggplot2")   # plotting with ggplot2
+install.packages("dplyr")     # for data cleaning and preparation
+install.packages("tidyr")     # also data preparation
+install.packages("carData")   # dataset
+install.packages("class")     # for KNN
+install.packages("pROC")      # calculate roc
+install.packages("plotROC")   # plot roc
+install.packages("ggmosaic")  # mosaic plot
+```
+
 ```{r,eval=TRUE,echo=FALSE}
-# install.packages("knitr") # probably already installed
-# install.packages("rmarkdown") # probably already installed
-# install.packages("ggplot2") # plotting with ggplot2
-# install.packages("dplyr") # for data cleaning and preparation
-# install.packages("ggfortify") # for model checking
-# install.packages("MASS")
-# install.packages("tidyr")
-# install.packages("carData") # dataset
-# install.packages("class")
-# install.packages("pROC")
-# install.packages("plotROC")
-# install.packages("boot")
-# install.packages("ggmosaic")
 library("knitr")
 library("rmarkdown")
 ```
@@ -41,6 +41,8 @@ For this problem you will need to include some LaTex code. Please install latex 
 
 ## a)
 
+
+
 ## b)
 
 ## c)
@@ -53,19 +55,64 @@ For this problem you will need to include some LaTex code. Please install latex 
 
 # Problem 2
 
-Here is a code chunk:
-
-```{r desc, fig.width=6, fig.height=6, fig.cap="Pairs plot of the academic salary data set."}
-library(carData)
-?Salaries
-GGally::ggpairs(Salaries)
-```
-
-
 ## a)
 
+### i) 
+The lm() function creates a variable to be estimatied which is multiplied with the binary variable of rankAssocProf and rankProf. The interpretation oof the number corresponding to the variables is that holding all other variables constant going from a AsstProf to AssocProf is assosiated with an increase in salary of 12,907.6 and going from AsstProf to Prof is assosiated with an increase in salary of 45,066.0 holding all other variables constant.
+
+### ii)
+To test the whole categorical variable Rank, you can use an ANOVA test to compare the means of salary for each category of Rank. 
+
+````
+             Df    Sum Sq   Mean Sq F value Pr(>F)    
+rank          2 1.432e+11 7.162e+10   128.2 <2e-16 ***
+Residuals   394 2.201e+11 5.586e+08                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+````
+
+This shows that rank as a whole has an impact on salary at the 99% confidence level.
+
 ## b) 
+
+
+ ```{r, echo=FALSE, results='asis'}
+# Plot 1 - Salary by rank
+library(ggplot2)
+# calculate the average salary for each rank
+avg_salary_by_rank <- aggregate(Salaries$salary, by = list(Salaries$rank), mean)
+names(avg_salary_by_rank) <- c("rank", "avg_salary")
+
+# add the geom_text layer to display the calculated average salaries
+ggplot(Salaries, aes(x = rank, y = salary)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_hline(data = avg_salary_by_rank, aes(yintercept = avg_salary), color = "red", linetype = "dotted") +
+  geom_text(data = avg_salary_by_rank, aes(x = rank, y = avg_salary, label = paste("Avg:", round(avg_salary, 0))), hjust = -0.05, vjust = -0.2) +
+  labs(x = "Years of Service", y = "Salary")
  
+
+ library(dplyr)
+# Calculate the proportions of each rank made up by women
+Salaries_proportions <- Salaries %>%
+  group_by(rank, sex) %>%
+  summarise(n = n()) %>%
+  mutate(proportion = n / sum(n))
+
+# Create a bar chart of the number of males and females for each rank
+ggplot(Salaries_proportions, aes(x=rank, y=proportion, fill=sex)) + 
+  geom_bar(stat="identity", position="dodge") + 
+  labs(x="Rank", y="Proportion", fill="Sex") + 
+  scale_y_continuous(labels = scales::percent) + 
+  geom_text(aes(label = scales::percent(proportion), y = proportion), 
+            position = position_dodge(0.9), vjust = -0.5) +
+  theme_classic()
+ 
+ ````
+ 
+The first graph shows that professors earn more than assistante professors and associate professors. The second shows that women make up a higher proportion of AsstProf than Prof.
+
+This is the reason why the regression with sex as the only covariate shows that sex is statistically significant in trems of salary, but it is no longer significant when controlling for rank and the other covariates.
 ## c)
 
 
