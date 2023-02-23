@@ -71,7 +71,7 @@ For this problem you will need to include some LaTex code. Please install latex 
 
 The Bigfoot Field Researchers Organization (BFRO)-problem, using the suggested code:
 
-```{r,  eval=TRUE, echo= TRUE}
+```{r,  eval=TRUE, echo= FALSE}
 bigfoot_original <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-09-13/bigfoot.csv")
 
 library(dplyr)
