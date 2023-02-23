@@ -191,23 +191,55 @@ ggplot(dfMSE, aes(x = lambdas)) +
 
 
 
+
+
+
+
 # Problem 2
 
 ## a)
 
 ### i) 
+The lm() function creates a variable to be estimatied which is multiplied with the binary variable of rankAssocProf and rankProf. The interpretation oof the number corresponding to the variables is that holding all other variables constant going from a AsstProf to AssocProf is assosiated with an increase in salary of 12,907.6 and going from AsstProf to Prof is assosiated with an increase in salary of 45,066.0 holding all other variables constant.
 
 ### ii)
+To test the whole categorical variable Rank, you can use an ANOVA test to compare the means of salary for each category of Rank. 
 
+````
+             Df    Sum Sq   Mean Sq F value Pr(>F)    
+rank          2 1.432e+11 7.162e+10   128.2 <2e-16 ***
+Residuals   394 2.201e+11 5.586e+08                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+````
+
+This shows that rank as a whole has an impact on salary at the 99% confidence level.
 
 ## b) 
 
-## c)
 
+ ```{r, echo=FALSE, results='asis'}
+# Plot 1 - Salary by rank
+library(ggplot2)
+# calculate the average salary for each rank
+avg_salary_by_rank <- aggregate(Salaries$salary, by = list(Salaries$rank), mean)
+names(avg_salary_by_rank) <- c("rank", "avg_salary")
 
-# Problem 3
+# add the geom_text layer to display the calculated average salaries
+ggplot(Salaries, aes(x = rank, y = salary)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_hline(data = avg_salary_by_rank, aes(yintercept = avg_salary), color = "red", linetype = "dotted") +
+  geom_text(data = avg_salary_by_rank, aes(x = rank, y = avg_salary, label = paste("Avg:", round(avg_salary, 0))), hjust = -0.05, vjust = -0.2) +
+  labs(x = "Years of Service", y = "Salary")
+ 
 
-The Bigfoot Field Researchers Organization (BFRO)-problem, using the suggested code:
+ library(dplyr)
+# Calculate the proportions of each rank made up by women
+Salaries_proportions <- Salaries %>%
+  group_by(rank, sex) %>%
+  summarise(n = n()) %>%
+  mutate(proportion = n / sum(n))
 
 # Create a bar chart of the number of males and females for each rank
 ggplot(Salaries_proportions, aes(x=rank, y=proportion, fill=sex)) + 
@@ -221,14 +253,10 @@ ggplot(Salaries_proportions, aes(x=rank, y=proportion, fill=sex)) +
  ```
  
 The first graph shows that professors earn more than assistante professors and associate professors. The second shows that women make up a higher proportion of AsstProf than Prof.
-```{r,  eval=TRUE, echo= TRUE}
-bigfoot_original <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-09-13/bigfoot.csv")
-```
 
 This is the reason why the regression with sex as the only covariate shows that sex is statistically significant in trems of salary, but it is no longer significant when controlling for rank and the other covariates.
 
 ## c)
-Plus the data preparation, not included in the pdf (but shown in the Rmarkdown-file)
 
 ```{r fig_model, fig.width=7, fig.height=7, fig.cap="Diagnostic for model1",out.width = '70%'}
 model1 <- lm(salary ~ ., data = Salaries)
@@ -239,8 +267,6 @@ library(ggfortify)
 autoplot(model1, smooth.colour = NA)
 ```
 The first plot showing residuals vs fitted values shows that the data is heteroskedastic, meaning that the variance is not constant. This breaks the assumption of homoscedasticity. 
-```{r,  eval=TRUE, echo= FALSE}
-library(dplyr)
 
 # ii)
 ```{r fig_model_check, fig.width=7, fig.height=7, fig.cap="Diagnostic for model2",out.width = '70%'}
@@ -318,7 +344,7 @@ $$
 PI_{lower} = \boldsymbol{x}_0^T \hat{\boldsymbol{\beta}} - t_{n-p} (1-\alpha/2) \hat{\sigma} \sqrt{1+ \boldsymbol{x}_0^T (X^TX)^{-1} \boldsymbol{x}_0}
 $$
 
-```{r PI_lower_calculated}
+```{r PI_lower_calculated, tidy = FALSE}
 x_0 = c(1, 0, 1, 0, 20, 20, 1)
 beta_hat = coef(model1)
 alpha = 0.05
@@ -330,9 +356,25 @@ PI_lower = t(x_0)%*%beta_hat - qt(1-alpha/2,df=n-p) * sd_hat *
   sqrt(1+t(x_0)%*%solve(t(X)%*%X)%*%x_0)
 PI_lower
 PI_lower == preds[1,2]
-```
+
+
+
+
+
 
 # Problem 3
+
+# The Bigfoot Field Researchers Organization (BFRO)-problem, using the suggested code
+
+```{r,  eval=TRUE, echo= TRUE}
+bigfoot_original <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-09-13/bigfoot.csv")
+```
+
+Plus the data preparation, not included in the pdf (but shown in the Rmarkdown-file)
+
+```{r,  eval=TRUE, echo= FALSE}
+library(dplyr)
+
 # Prepare the data:
 bigfoot <- bigfoot_original %>%
   # Select the relevant covariates:
@@ -482,7 +524,7 @@ KNN sensitivity is 81,0 % and specificity is 83,0 %
 
 ### (iii)
 
-````{r}
+```{r}
 library(pROC)
 
 glm_roc <- roc(response = test$class, predictor = glm_probabilities)
@@ -515,7 +557,4 @@ for this problem.
 (ii): False,
 (iii): True,
 (iv): False
-
-
-
 
