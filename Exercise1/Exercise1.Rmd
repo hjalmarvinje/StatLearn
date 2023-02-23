@@ -58,64 +58,205 @@ For this problem you will need to include some LaTex code. Please install latex 
 ## a)
 
 ### i) 
-The lm() function creates a variable to be estimatied which is multiplied with the binary variable of rankAssocProf and rankProf. The interpretation oof the number corresponding to the variables is that holding all other variables constant going from a AsstProf to AssocProf is assosiated with an increase in salary of 12,907.6 and going from AsstProf to Prof is assosiated with an increase in salary of 45,066.0 holding all other variables constant.
 
 ### ii)
-To test the whole categorical variable Rank, you can use an ANOVA test to compare the means of salary for each category of Rank. 
 
-````
-             Df    Sum Sq   Mean Sq F value Pr(>F)    
-rank          2 1.432e+11 7.162e+10   128.2 <2e-16 ***
-Residuals   394 2.201e+11 5.586e+08                   
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-````
-
-This shows that rank as a whole has an impact on salary at the 99% confidence level.
 
 ## b) 
 
-
- ```{r, echo=FALSE, results='asis'}
-# Plot 1 - Salary by rank
-library(ggplot2)
-# calculate the average salary for each rank
-avg_salary_by_rank <- aggregate(Salaries$salary, by = list(Salaries$rank), mean)
-names(avg_salary_by_rank) <- c("rank", "avg_salary")
-
-# add the geom_text layer to display the calculated average salaries
-ggplot(Salaries, aes(x = rank, y = salary)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
-  geom_hline(data = avg_salary_by_rank, aes(yintercept = avg_salary), color = "red", linetype = "dotted") +
-  geom_text(data = avg_salary_by_rank, aes(x = rank, y = avg_salary, label = paste("Avg:", round(avg_salary, 0))), hjust = -0.05, vjust = -0.2) +
-  labs(x = "Years of Service", y = "Salary")
- 
-
- library(dplyr)
-# Calculate the proportions of each rank made up by women
-Salaries_proportions <- Salaries %>%
-  group_by(rank, sex) %>%
-  summarise(n = n()) %>%
-  mutate(proportion = n / sum(n))
-
-# Create a bar chart of the number of males and females for each rank
-ggplot(Salaries_proportions, aes(x=rank, y=proportion, fill=sex)) + 
-  geom_bar(stat="identity", position="dodge") + 
-  labs(x="Rank", y="Proportion", fill="Sex") + 
-  scale_y_continuous(labels = scales::percent) + 
-  geom_text(aes(label = scales::percent(proportion), y = proportion), 
-            position = position_dodge(0.9), vjust = -0.5) +
-  theme_classic()
- 
- ````
- 
-The first graph shows that professors earn more than assistante professors and associate professors. The second shows that women make up a higher proportion of AsstProf than Prof.
-
-This is the reason why the regression with sex as the only covariate shows that sex is statistically significant in trems of salary, but it is no longer significant when controlling for rank and the other covariates.
 ## c)
 
 
 # Problem 3
 
+The Bigfoot Field Researchers Organization (BFRO)-problem, using the suggested code:
+
+```{r,  eval=TRUE, echo= TRUE}
+bigfoot_original <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-09-13/bigfoot.csv")
+
+library(dplyr)
+
+# Prepare the data:
+bigfoot <- bigfoot_original %>%
+  # Select the relevant covariates:
+  dplyr::select(classification, observed, longitude, latitude, visibility) %>%
+  # Remove observations of class C (these are second- or third hand accounts):
+  dplyr::filter(classification != "Class C") %>%
+  # Turn into 0/1, 1 = Class A, 0 = Class B:
+  dplyr::mutate(class = ifelse(classification == "Class A", 1, 0)) %>%
+  # Create new indicator variables for some words from the description:
+  dplyr::mutate(fur = grepl("fur", observed),
+                howl = grepl("howl", observed),
+                saw = grepl("saw", observed),
+                heard = grepl("heard", observed)) %>%
+  # Remove unnecessary variables:
+  dplyr::select(-c("classification", "observed")) %>%
+  # Remove any rows that contain missing values:
+  tidyr::drop_na()
+
+```
+
+```{r}
+
+set.seed(2023)
+# 70% of the sample size for training set
+training_set_size <- floor(0.7 * nrow(bigfoot))
+train_ind <- sample(seq_len(nrow(bigfoot)), size = training_set_size)
+train <- bigfoot[train_ind, ]
+test <- bigfoot[-train_ind, ]
+```
+
+## Task a)
+### (i) 
+
+
+```{r}
+
+model <- glm(class~longitude+latitude+visibility+fur+howl+saw+heard, family="binomial", data=train)
+
+glm_probabilities <- predict(model, test, type="response")
+no_classified = sum(glm_probabilities >= 0.5)
+no_classified # Number of reports classified as clear sightings: 441
+```
+Number of clear sightings: 441
+
+
+### (ii)
+
+```{r, echo=TRUE}
+summary(model)
+```
+
+The coefficients for sawTRUE is 1.29, which means that the average change in log odds with one unit increase of the value.
+```{r, echo=TRUE}
+change <- exp(1.29)
+print(change)
+```
+
+The answer is therefore D) Multiply by 3.64")
+
+
+## Task b)
+### (i)
+
+```{r, echo=TRUE}
+require(MASS)
+qda_model <- qda(class~longitude+latitude+visibility+fur+howl+saw+heard, data=train)
+qda_predicted <- predict(qda_model, test)
+table(qda_predicted$class) 
+```
+Number of clear sightings: 626
+
+
+### (ii) 
+
+1): True,
+2): False,
+3): False,
+4): False
+
+
+## Task c)
+### (i)
+
+```{r, echo=TRUE}
+require(class)
+?knn()
+knn_model <- knn(train=train, test=test, cl=train$class, k=25, prob=TRUE)
+
+table(knn_model)
+```
+Number of clear sightings: 441
+
+
+## Task c)
+### (ii) 
+
+Trade-off between bias and variance, higher k -> less variance and more bias. How to tune the k-parameter in a better way:  I could create plots for different k-values and choose the k-value with the lowest error.
+
+
+## Task d)
+### (i)
+
+Prediction, because we use existing data for creating a model that will classify a new instance correctly as often as possible. With inference, we are more interested in evaluating the relationship between the response variables and the predictor, i.e. the interepretability of the model. All models are interesting with predicting, but KNN and QDA would not been as relevant for inference.
+
+
+### (ii)
+
+Sensitivity: True positive value, probability of a positive test result, given that instance truly is positive.
+Specificity: True negative value, probability of a negative test result, given that instance tryly is negative.
+
+For all confusion matrices: rows show prediction values and columns show true values.
+
+```{r}
+# Confusion matrix Glm
+glm_predicted <- rep(0, 912)
+glm_predicted[glm_probabilities > 0.5] <- 1
+table(glm_predicted, test$class)
+glm_sensitivity <- 299/(299+148)
+glm_specificity <- 323/(323+142)
+glm_sensitivity
+glm_specificity
+```
+Glm sensitivity is 66,9 % and specificity is 69,5 %
+
+```{r}
+# Confusion matrix QDA
+table(qda_predicted$class, test$class) 
+qda_sensitivity <- 389/(389+58)
+qda_specificity <- 228/(228+237)
+qda_sensitivity
+qda_specificity
+```
+QDA sensitivity is 87,0 % and specificity is 49,0 %
+
+```{r}
+# Confusion matrix KNN
+table(knn_model, test$class) 
+knn_sensitivity <- 362/(362+85)
+knn_specificity <- 386/(386+79)
+knn_sensitivity
+knn_specificity
+```
+KNN sensitivity is 81,0 % and specificity is 83,0 %
+
+
+### (iii)
+
+````{r}
+library(pROC)
+
+glm_roc <- roc(response = test$class, predictor = glm_probabilities)
+plot(glm_roc, col="pink", lwd=4, print.auc=TRUE, main="ROC-curve for glm-model")
+
+qda_roc <- roc(response = test$class, predictor = qda_predicted$posterior[,"1"])
+plot(qda_roc, col="purple", lwd=4, print.auc=TRUE, main="ROC-curve for qda-model")
+
+knn_probabilities <- ifelse(knn_model == 0, 1 - attributes(knn_model)$prob,attributes(knn_model)$prob)
+knn_roc <- roc(response = test$class, predictor = knn_probabilities)
+plot(knn_roc, col="turquoise", lwd=4, print.auc=TRUE, main="ROC curve knn-model")
+```
+
+
+### (iv) 
+
+Glm and QDA performs similar for ROC, while KKN performs significantly better. Would therefore choose the KNN-classifier
+for this problem.
+
+
+
 # Problem 4
+
+## a)
+
+
+## b) 
+
+(i): False,
+(ii): False,
+(iii): True,
+(iv): False
+
+
+
+

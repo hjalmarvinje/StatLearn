@@ -143,7 +143,7 @@ library(pROC)
 ?plot()
 
 glm_roc <- roc(response = test$class, predictor = glm_probabilities)
-plot(glm_roc, col="pink", lwd=4, print.auc=TRUE, main="ROC-curve for lgm-model")
+plot(glm_roc, col="pink", lwd=4, print.auc=TRUE, main="ROC-curve for glm-model")
 
 qda_roc <- roc(response = test$class, predictor = qda_predicted$posterior[,"1"])
 plot(qda_roc, col="purple", lwd=4, print.auc=TRUE, main="ROC-curve for qda-model")
