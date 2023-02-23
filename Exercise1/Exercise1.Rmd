@@ -168,7 +168,7 @@ ggplot(dfVar, aes(x = lambdas, y = var)) +
 
 ## g)
 
-Fill in the `exp_mse` of the following code to calculate the expected MSE for the same lambda values that you plugged in above. Then plot all the components together and find the value of $\lambda$ which minimizes the expected MSE. 
+Fill in the `exp_mse` of the following code to calculate the expected MSE for the same lambda values that you plugged in above. Then plot all the components together and find the value of $\lambda$ which minimizes the expected MSE.
 
 ```{r,eval=FALSE}
 irrErr <- sigma^2
@@ -177,15 +177,15 @@ min_lambda <- lambdas[which.min(exp_mse)]
 dfMSE <- data.frame(lambdas = lambdas, mse = exp_mse, bias = BIAS, var = VAR, irrErr = irrErr)
 dfBVI <- merge(dfBias, dfVar, by = "lambdas")
 
-ggplot(dfMSE, aes(x = lambdas)) + 
-  geom_line(aes(y = bias, color = "BIAS squared")) + 
-  geom_line(aes(y = var, color = "VAR")) + 
-  geom_line(aes(y = irrErr, color = "irrErr")) + 
-  geom_line(aes(y = mse, color = "Exp. MSE")) +
-  scale_color_manual(values = c("BIAS" = "blue", "VAR" = "orange", "irrErr" = "pink", "Exp. MSE" = "purple")) +
-  xlab("lambda") +
-  ylab("Exp. MSE") +
-  ggtitle(paste("the lambda that minimize expected MSE is ", round(min_lambda, 3)))
+# <!-- ggplot(dfMSE, aes(x = lambdas)) +  -->
+# <!--   geom_line(aes(y = bias, color = "BIAS squared")) +  -->
+# <!--   geom_line(aes(y = var, color = "VAR")) +  -->
+# <!--   geom_line(aes(y = irrErr, color = "irrErr")) +  -->
+# <!--   geom_line(aes(y = mse, color = "Exp. MSE")) + -->
+# <!--   scale_color_manual(values = c("BIAS" = "blue", "VAR" = "orange", "irrErr" = "pink", "Exp. MSE" = "purple")) + -->
+# <!--   xlab("lambda") + -->
+# <!--   ylab("Exp. MSE") + -->
+# <!--   ggtitle(paste("the lambda that minimize expected MSE is ", round(min_lambda, 3))) -->
 
 ```
 
