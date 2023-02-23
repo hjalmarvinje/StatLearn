@@ -14,7 +14,6 @@ sex_model <- lm(salary ~ sex, data = Salaries)
 summary(sex_model)
 
 
-
 # Plot 1 - Salary by rank
 library(ggplot2)
 # calculate the average salary for each rank
@@ -45,3 +44,13 @@ ggplot(Salaries_proportions, aes(x=rank, y=proportion, fill=sex)) +
   geom_text(aes(label = scales::percent(proportion), y = proportion), 
             position = position_dodge(0.9), vjust = -0.5) +
   theme_classic()
+
+
+# 2c
+install.packages("ggfortify")
+library(ggplot2)
+library(ggfortify)
+autoplot(model1, smooth.colour = NA)
+
+
+

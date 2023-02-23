@@ -246,13 +246,113 @@ ggplot(Salaries_proportions, aes(x=rank, y=proportion, fill=sex)) +
             position = position_dodge(0.9), vjust = -0.5) +
   theme_classic()
  
- ````
+ ```
  
 The first graph shows that professors earn more than assistante professors and associate professors. The second shows that women make up a higher proportion of AsstProf than Prof.
 
 This is the reason why the regression with sex as the only covariate shows that sex is statistically significant in trems of salary, but it is no longer significant when controlling for rank and the other covariates.
+
 ## c)
 
+```{r fig_model, fig.width=7, fig.height=7, fig.cap="Diagnostic for model1",out.width = '70%'}
+model1 <- lm(salary ~ ., data = Salaries)
+options(repos = c(CRAN = "https://cran.rstudio.com/"))
+install.packages("ggfortify")
+library(ggplot2)
+library(ggfortify)
+autoplot(model1, smooth.colour = NA)
+```
+The first plot showing residuals vs fitted values shows that the data is heteroskedastic, meaning that the variance is not constant. This breaks the assumption of homoscedasticity. 
+
+# ii)
+```{r fig_model_check, fig.width=7, fig.height=7, fig.cap="Diagnostic for model2",out.width = '70%'}
+log_salary = log(Salaries$salary)
+model2 <- lm(log_salary ~ rank + discipline + yrs.since.phd + yrs.service + sex - salary, data = Salaries)
+library(ggplot2)
+autoplot(model2, smooth.colour = NA)
+```
+
+The residual variance is still heteroskedastic. 
+
+```{r fig_model_check_log-transform, fig.width=7, fig.height=7, fig.cap="Diagnostic for model3",out.width = '70%'}
+log_salary = log(Salaries$salary)
+model2 <- lm(log_salary ~ rank + discipline + yrs.since.phd + yrs.service + sex - salary, data = Salaries)
+library(ggplot2)
+autoplot(model2, smooth.colour = NA)
+```
+## d)
+
+)
+```{r fig_model_check_interaction, fig.width=6, fig.height=6, fig.cap="Diagnostic plots for `model3`.",out.width = '70%'}
+model3 <- lm(log_salary ~ rank + discipline + yrs.since.phd + yrs.service + sex + sex:yrs.since.phd -salary, data = Salaries)
+summary(model3)
+```
+
+ii) The interaction term is not statistically significant, so we can not conclude that Bert-Ernie is correct.
+
+## e)
+
+```{r bootstrap}
+# i)
+set.seed(4268)
+getR2 <- function(data, indices) 
+  {fit <- lm(salary ~ rank + discipline + yrs.since.phd + yrs.service + sex,
+  data = data[indices,])
+summary(fit)$r.squared}
+library(boot)
+boot_results <- boot(data = Salaries, statistic = getR2, R = 1000, strata = Salaries$rank)
+```
+
+```{r bootstrap_plot, fig.width=5, fig.height=5}
+# ii)
+hist(boot_results$t, main = "Bootstrap distribution of R-Squared", 
+     xlab = "R-Squared", col = "blue", border = "black", breaks = 30)
+```
+
+```{r bootstrap_quantiles}
+# iii)
+sd(boot_results$t)
+quant = boot_results$t[25:975]
+summary(quant)
+```
+
+(iv) R-squared was calculated to 0.5249 and the bootstrap estimates 0.4546766 with a 95% confidence interval of [0.3761, 0.5470].The original R-squared lies within the 95% confidence interval.
+
+
+## f)
+
+
+```{r prediction}
+# i)
+bert_ernie <- data.frame(rank=c("Prof", "Prof"), discipline=c("A", "B"), 
+                         yrs.since.phd=c(20, 20), yrs.service=c(20, 20), 
+                         sex=c("Male", "Male"))
+preds <- predict(object=model1, newdata=bert_ernie, interval="prediction", level=0.95) 
+# 1. Corrected confidence to prediction
+# 2. Corrected 0.975 to 0.95
+preds[1, 2] > 75000
+```
+
+He can now no longer be confident with 95% certainty that we will earn at least $75 000 at this time.
+
+ii) The analytic expression for the lower limit of the prediction interval:
+$$
+PI_{lower} = \boldsymbol{x}_0^T \hat{\boldsymbol{\beta}} - t_{n-p} (1-\alpha/2) \hat{\sigma} \sqrt{1+ \boldsymbol{x}_0^T (X^TX)^{-1} \boldsymbol{x}_0}
+$$
+
+```{r PI_lower_calculated}
+x_0 = c(1, 0, 1, 0, 20, 20, 1)
+beta_hat = coef(model1)
+alpha = 0.05
+sd_hat = summary(model1)$sigma
+X <- model.matrix(~rank+discipline+yrs.since.phd+yrs.service+sex, data=Salaries)
+n = nrow(Salaries)
+p = ncol(X)
+PI_lower = t(x_0)%*%beta_hat - qt(1-alpha/2,df=n-p) * sd_hat * 
+  sqrt(1+t(x_0)%*%solve(t(X)%*%X)%*%x_0)
+PI_lower
+PI_lower == preds[1,2]
+```
 
 # Problem 3
 
