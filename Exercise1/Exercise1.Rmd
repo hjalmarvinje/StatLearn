@@ -284,9 +284,10 @@ model2 <- lm(log_salary ~ rank + discipline + yrs.since.phd + yrs.service + sex 
 library(ggplot2)
 autoplot(model2, smooth.colour = NA)
 ```
+
 ## d)
 
-)
+
 ```{r fig_model_check_interaction, fig.width=6, fig.height=6, fig.cap="Diagnostic plots for `model3`.",out.width = '70%'}
 model3 <- lm(log_salary ~ rank + discipline + yrs.since.phd + yrs.service + sex + sex:yrs.since.phd -salary, data = Salaries)
 summary(model3)
@@ -357,7 +358,7 @@ PI_lower = t(x_0)%*%beta_hat - qt(1-alpha/2,df=n-p) * sd_hat *
 PI_lower
 PI_lower == preds[1,2]
 
-
+```
 
 
 
