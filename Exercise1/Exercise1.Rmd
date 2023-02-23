@@ -71,9 +71,13 @@ For this problem you will need to include some LaTex code. Please install latex 
 
 The Bigfoot Field Researchers Organization (BFRO)-problem, using the suggested code:
 
-```{r,  eval=TRUE, echo= FALSE}
+```{r,  eval=TRUE, echo= TRUE}
 bigfoot_original <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-09-13/bigfoot.csv")
+```
 
+Plus the data preparation, not included in the pdf (but shown in the Rmarkdown-file)
+
+```{r,  eval=TRUE, echo= FALSE}
 library(dplyr)
 
 # Prepare the data:
@@ -95,6 +99,8 @@ bigfoot <- bigfoot_original %>%
   tidyr::drop_na()
 
 ```
+
+Next, setting seed and creating training- and test-sets:
 
 ```{r}
 
