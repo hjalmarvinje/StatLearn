@@ -41,17 +41,161 @@ For this problem you will need to include some LaTex code. Please install latex 
 
 ## a)
 
+We know
+$$Y=f(\mathbf {x})+\varepsilon $$
+$$\text{E}(\varepsilon)=0 \\$$
+$$f(\mathbf{x}) = \mathbf{x}^T\boldsymbol{\beta}
+$$
+
+so
+
+$$\text{E}(\widetilde{\boldsymbol \beta}) =(\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top\text{E}({\bf Y}) = $$
+$$(\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top\text{E}(\mathbf{X}\beta+\epsilon) =$$
+$$(\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top\mathbf{X}\beta+0 =$$
+$$(\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top\mathbf{X}\beta $$
+
+And the covariance matrix is then 
+
+$$\text{Cov}(\widetilde{\boldsymbol \beta}) = \text{Cov}((\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top{\bf Y}) = $$
+$$(\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top \text{Cov}(\bf{Y}) ((\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top)^\top
+$$
+Cov(Y) would be only the variance: 
+
+$$
+ = (\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top \sigma^{2} \mathbf{I}  ((\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top)^\top
+$$
 
 
 ## b)
 
+Expected value: 
+$$ \text{E}(\widetilde{f}({x_0})) = \text{E}(\mathbf{x}^\top_0 \widetilde{\boldsymbol \beta}) = $$
+$$\mathbf{x}^\top_0 \text{E}(\widetilde{\boldsymbol \beta}) = \mathbf{x}^\top_0 (\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top\mathbf{X}\beta $$
+Variance: 
+
+$$ \text{Var}(\widetilde{f}({x_0})) = \text{Var}(\mathbf{x}^\top_0 \widetilde{\boldsymbol \beta}) =$$
+$$\mathbf{x}^\top_0 \text{Var}(\widetilde{\boldsymbol \beta}) \mathbf{x}_0 = $$
+$$\mathbf{x}^\top_0 (\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top \text{Cov}(\bf{Y}) ((\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top)^\top \mathbf{x}_0 $$
+Cov(Y) would be only the variance: 
+
+$$ = \mathbf{x}^\top_0 (\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top \sigma^{2} \mathbf{I} ((\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top)^\top \mathbf{x}_0 $$
+
+
 ## c)
 
+Bias is a systematic error, in statistics it is an estimate of the systematic difference from the true value. If a model is inflexible, it could be underfitted and have a high bias. 
+
+Variance measures uncertainty. If variance is high, the estimate of the distribution function is likely to change for different input data. Very complex models might overfit data and get a high variance. 
+
+Irreducable error is the variance of a "unknown" variable which adds uncorrelated noise with a mean of 0 ("random", or unobserved influences), which means that it cannot be reduced by improving the fit of the model. 
+
+
 ## d)
+
+Bias: 
+
+$$ f({x_0}) - E[\widetilde{f}({x_0})] = $$
+$$ \mathbf{x}^\top_0 \widetilde{\boldsymbol \beta} - \mathbf{x}^\top_0 (\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top\mathbf{X}\beta  $$
+
+Variance (using previous calculations): 
+
+$$  Var(\widetilde{f}({x_0})) = \mathbf{x}^\top_0 (\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top \text{Cov}(\bf{Y}) ((\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top)^\top \mathbf{x}_0 $$
+
+
+Irreducible error:
+
+$$ Var(\varepsilon)= \sigma^{2} $$
+
+MSE:
+
+$$ MSE = \text{irreducable error + variance + squared bias} = $$
+$$ Var(\varepsilon) + \mathbf{x}^\top_0 (\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top \text{Cov}(\bf{Y}) ((\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top)^\top \mathbf{x}_0 + (\mathbf{x}^\top_0 \widetilde{\boldsymbol \beta} - \mathbf{x}^\top_0 (\mathbf{X}^\top\mathbf{X}+\lambda {\bf I})^{-1}\mathbf{X}^\top\mathbf{X}\beta)^2 $$
+
 
 ## e)
 
  
+```{r}
+id <- "1X_8OKcoYbng1XvYFDirxjEWr7LtpNr1m" # google file ID
+values <- dget(sprintf("https://docs.google.com/uc?id=%s&export=download", id))
+X <- values$X
+dim(X)
+x0 <- values$x0
+dim(x0)
+beta <- values$beta
+dim(beta)
+sigma <- values$sigma
+sigma
+```
+
+```{r,eval=TRUE, echo = TRUE}
+library(ggplot2)
+bias <- function(lambda, X, x0, beta) {
+  p <- ncol(X)
+  value <- (t(x0) %*% beta - t(x0) %*% solve(t(X) %*% X + lambda * diag(p)) %*% t(X) %*% X %*% beta)^2
+  return(value)
+}
+lambdas <- seq(0, 2, length.out = 500)
+BIAS <- rep(NA, length(lambdas))
+for (i in seq_along(lambdas)) BIAS[i] <- bias(lambdas[i], X, x0, beta)
+dfBias <- data.frame(lambdas = lambdas, bias = BIAS)
+ggplot(dfBias, aes(x = lambdas, y = bias)) +
+  geom_line(color = "hotpink") +
+  xlab(expression(lambda)) +
+  ylab(expression(bias^2))
+```
+
+
+
+## f)
+
+
+```{r,eval=TRUE, echo = TRUE}
+variance <- function(lambda, X, x0, sigma) {
+  p <- ncol(X)
+  inv <- solve(t(X) %*% X + lambda * diag(p))
+  value <- t(x0) %*% solve(t(X) %*% X + lambda * diag(p)) %*% t(X) %*% t(solve(t(X) %*% X + lambda * diag(p)) %*% t(X)) %*% x0 * sigma^2
+  return(value)
+}
+lambdas <- seq(0, 2, length.out = 500)
+VAR <- rep(NA, length(lambdas))
+for (i in seq_along(lambdas)) VAR[i] <- variance(lambdas[i], X, x0, sigma)
+dfVar <- data.frame(lambdas = lambdas, var = VAR)
+ggplot(dfVar, aes(x = lambdas, y = var)) +
+  geom_line(color = "gold") +
+  xlab(expression(lambda)) +
+  ylab("variance")
+```
+
+
+## g)
+
+
+```{r,eval=TRUE, echo = TRUE}}
+irrErr <- sigma^2
+exp_mse <- BIAS + VAR + irrErr
+min_lambda <- lambdas[which.min(exp_mse)]
+dfMSE <- data.frame(lambdas = lambdas, mse = exp_mse, bias = BIAS, var = VAR, irrErr = irrErr)
+dfBVI <- merge(dfBias, dfVar, by = "lambdas")
+
+# <!-- ggplot(dfMSE, aes(x = lambdas)) +  -->
+# <!--   geom_line(aes(y = bias, color = "BIAS squared")) +  -->
+# <!--   geom_line(aes(y = var, color = "VAR")) +  -->
+# <!--   geom_line(aes(y = irrErr, color = "irrErr")) +  -->
+# <!--   geom_line(aes(y = mse, color = "Exp. MSE")) + -->
+# <!--   scale_color_manual(values = c("BIAS" = "blue", "VAR" = "orange", "irrErr" = "pink", "Exp. MSE" = "purple")) + -->
+# <!--   xlab("lambda") + -->
+# <!--   ylab("Exp. MSE") + -->
+# <!--   ggtitle(paste("the lambda that minimize expected MSE is ", round(min_lambda, 3))) -->
+
+```
+NB: This code would not compile into graphs without . Will go to student assistants and ask for support. 
+
+
+
+
+
+
 
 # Problem 2
 
@@ -108,14 +252,312 @@ ggplot(Salaries_proportions, aes(x=rank, y=proportion, fill=sex)) +
             position = position_dodge(0.9), vjust = -0.5) +
   theme_classic()
  
- ````
+ ```
  
 The first graph shows that professors earn more than assistante professors and associate professors. The second shows that women make up a higher proportion of AsstProf than Prof.
 
 This is the reason why the regression with sex as the only covariate shows that sex is statistically significant in trems of salary, but it is no longer significant when controlling for rank and the other covariates.
+
 ## c)
+
+```{r fig_model, fig.width=7, fig.height=7, fig.cap="Diagnostic for model1",out.width = '70%'}
+model1 <- lm(salary ~ ., data = Salaries)
+options(repos = c(CRAN = "https://cran.rstudio.com/"))
+install.packages("ggfortify")
+library(ggplot2)
+library(ggfortify)
+autoplot(model1, smooth.colour = NA)
+```
+The first plot showing residuals vs fitted values shows that the data is heteroskedastic, meaning that the variance is not constant. This breaks the assumption of homoscedasticity. 
+
+# ii)
+```{r fig_model_check, fig.width=7, fig.height=7, fig.cap="Diagnostic for model2",out.width = '70%'}
+log_salary = log(Salaries$salary)
+model2 <- lm(log_salary ~ rank + discipline + yrs.since.phd + yrs.service + sex - salary, data = Salaries)
+library(ggplot2)
+autoplot(model2, smooth.colour = NA)
+```
+
+The residual variance is still heteroskedastic. 
+
+```{r fig_model_check_log-transform, fig.width=7, fig.height=7, fig.cap="Diagnostic for model3",out.width = '70%'}
+log_salary = log(Salaries$salary)
+model2 <- lm(log_salary ~ rank + discipline + yrs.since.phd + yrs.service + sex - salary, data = Salaries)
+library(ggplot2)
+autoplot(model2, smooth.colour = NA)
+```
+
+## d)
+
+
+```{r fig_model_check_interaction, fig.width=6, fig.height=6, fig.cap="Diagnostic plots for `model3`.",out.width = '70%'}
+model3 <- lm(log_salary ~ rank + discipline + yrs.since.phd + yrs.service + sex + sex:yrs.since.phd -salary, data = Salaries)
+summary(model3)
+```
+
+ii) The interaction term is not statistically significant, so we can not conclude that Bert-Ernie is correct.
+
+## e)
+
+```{r bootstrap}
+# i)
+set.seed(4268)
+getR2 <- function(data, indices) 
+  {fit <- lm(salary ~ rank + discipline + yrs.since.phd + yrs.service + sex,
+  data = data[indices,])
+summary(fit)$r.squared}
+library(boot)
+boot_results <- boot(data = Salaries, statistic = getR2, R = 1000, strata = Salaries$rank)
+```
+
+```{r bootstrap_plot, fig.width=5, fig.height=5}
+# ii)
+hist(boot_results$t, main = "Bootstrap distribution of R-Squared", 
+     xlab = "R-Squared", col = "blue", border = "black", breaks = 30)
+```
+
+```{r bootstrap_quantiles}
+# iii)
+sd(boot_results$t)
+quant = boot_results$t[25:975]
+summary(quant)
+```
+
+(iv) R-squared was calculated to 0.5249 and the bootstrap estimates 0.4546766 with a 95% confidence interval of [0.3761, 0.5470].The original R-squared lies within the 95% confidence interval.
+
+
+## f)
+
+
+```{r prediction}
+# i)
+bert_ernie <- data.frame(rank=c("Prof", "Prof"), discipline=c("A", "B"), 
+                         yrs.since.phd=c(20, 20), yrs.service=c(20, 20), 
+                         sex=c("Male", "Male"))
+preds <- predict(object=model1, newdata=bert_ernie, interval="prediction", level=0.95) 
+# 1. Corrected confidence to prediction
+# 2. Corrected 0.975 to 0.95
+preds[1, 2] > 75000
+```
+
+He can now no longer be confident with 95% certainty that we will earn at least $75 000 at this time.
+
+ii) The analytic expression for the lower limit of the prediction interval:
+$$
+PI_{lower} = \boldsymbol{x}_0^T \hat{\boldsymbol{\beta}} - t_{n-p} (1-\alpha/2) \hat{\sigma} \sqrt{1+ \boldsymbol{x}_0^T (X^TX)^{-1} \boldsymbol{x}_0}
+$$
+
+```{r PI_lower_calculated, tidy = FALSE}
+x_0 = c(1, 0, 1, 0, 20, 20, 1)
+beta_hat = coef(model1)
+alpha = 0.05
+sd_hat = summary(model1)$sigma
+X <- model.matrix(~rank+discipline+yrs.since.phd+yrs.service+sex, data=Salaries)
+n = nrow(Salaries)
+p = ncol(X)
+PI_lower = t(x_0)%*%beta_hat - qt(1-alpha/2,df=n-p) * sd_hat * 
+  sqrt(1+t(x_0)%*%solve(t(X)%*%X)%*%x_0)
+PI_lower
+PI_lower == preds[1,2]
+
+```
+
+
 
 
 # Problem 3
 
+# The Bigfoot Field Researchers Organization (BFRO)-problem, using the suggested code
+
+```{r,  eval=TRUE, echo= TRUE}
+bigfoot_original <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-09-13/bigfoot.csv")
+```
+
+Plus the data preparation, not included in the pdf (but shown in the Rmarkdown-file)
+
+```{r,  eval=TRUE, echo= FALSE}
+library(dplyr)
+
+# Prepare the data:
+bigfoot <- bigfoot_original %>%
+  # Select the relevant covariates:
+  dplyr::select(classification, observed, longitude, latitude, visibility) %>%
+  # Remove observations of class C (these are second- or third hand accounts):
+  dplyr::filter(classification != "Class C") %>%
+  # Turn into 0/1, 1 = Class A, 0 = Class B:
+  dplyr::mutate(class = ifelse(classification == "Class A", 1, 0)) %>%
+  # Create new indicator variables for some words from the description:
+  dplyr::mutate(fur = grepl("fur", observed),
+                howl = grepl("howl", observed),
+                saw = grepl("saw", observed),
+                heard = grepl("heard", observed)) %>%
+  # Remove unnecessary variables:
+  dplyr::select(-c("classification", "observed")) %>%
+  # Remove any rows that contain missing values:
+  tidyr::drop_na()
+
+```
+
+Next, setting seed and creating training- and test-sets:
+
+```{r}
+
+set.seed(2023)
+# 70% of the sample size for training set
+training_set_size <- floor(0.7 * nrow(bigfoot))
+train_ind <- sample(seq_len(nrow(bigfoot)), size = training_set_size)
+train <- bigfoot[train_ind, ]
+test <- bigfoot[-train_ind, ]
+```
+
+## Task a)
+### (i) 
+
+
+```{r}
+
+model <- glm(class~longitude+latitude+visibility+fur+howl+saw+heard, family="binomial", data=train)
+
+glm_probabilities <- predict(model, test, type="response")
+no_classified = sum(glm_probabilities >= 0.5)
+no_classified # Number of reports classified as clear sightings: 441
+```
+Number of clear sightings: 441
+
+
+### (ii)
+
+```{r, echo=TRUE}
+summary(model)
+```
+
+The coefficients for sawTRUE is 1.29, which means that the average change in log odds with one unit increase of the value.
+```{r, echo=TRUE}
+change <- exp(1.29)
+print(change)
+```
+
+The answer is therefore D) Multiply by 3.64")
+
+
+## Task b)
+### (i)
+
+```{r, echo=TRUE}
+require(MASS)
+qda_model <- qda(class~longitude+latitude+visibility+fur+howl+saw+heard, data=train)
+qda_predicted <- predict(qda_model, test)
+table(qda_predicted$class) 
+```
+Number of clear sightings: 626
+
+
+### (ii) 
+
+1): True,
+2): False,
+3): False,
+4): False
+
+
+## Task c)
+### (i)
+
+```{r, echo=TRUE}
+require(class)
+?knn()
+knn_model <- knn(train=train, test=test, cl=train$class, k=25, prob=TRUE)
+
+table(knn_model)
+```
+Number of clear sightings: 441
+
+
+## Task c)
+### (ii) 
+
+Trade-off between bias and variance, higher k -> less variance and more bias. How to tune the k-parameter in a better way:  I could create plots for different k-values and choose the k-value with the lowest error.
+
+
+## Task d)
+### (i)
+
+Prediction, because we use existing data for creating a model that will classify a new instance correctly as often as possible. With inference, we are more interested in evaluating the relationship between the response variables and the predictor, i.e. the interepretability of the model. All models are interesting with predicting, but KNN and QDA would not been as relevant for inference.
+
+
+### (ii)
+
+Sensitivity: True positive value, probability of a positive test result, given that instance truly is positive.
+Specificity: True negative value, probability of a negative test result, given that instance tryly is negative.
+
+For all confusion matrices: rows show prediction values and columns show true values.
+
+```{r}
+# Confusion matrix Glm
+glm_predicted <- rep(0, 912)
+glm_predicted[glm_probabilities > 0.5] <- 1
+table(glm_predicted, test$class)
+glm_sensitivity <- 299/(299+148)
+glm_specificity <- 323/(323+142)
+glm_sensitivity
+glm_specificity
+```
+Glm sensitivity is 66,9 % and specificity is 69,5 %
+
+```{r}
+# Confusion matrix QDA
+table(qda_predicted$class, test$class) 
+qda_sensitivity <- 389/(389+58)
+qda_specificity <- 228/(228+237)
+qda_sensitivity
+qda_specificity
+```
+QDA sensitivity is 87,0 % and specificity is 49,0 %
+
+```{r}
+# Confusion matrix KNN
+table(knn_model, test$class) 
+knn_sensitivity <- 362/(362+85)
+knn_specificity <- 386/(386+79)
+knn_sensitivity
+knn_specificity
+```
+KNN sensitivity is 81,0 % and specificity is 83,0 %
+
+
+### (iii)
+
+```{r}
+library(pROC)
+
+glm_roc <- roc(response = test$class, predictor = glm_probabilities)
+plot(glm_roc, col="pink", lwd=4, print.auc=TRUE, main="ROC-curve for glm-model")
+
+qda_roc <- roc(response = test$class, predictor = qda_predicted$posterior[,"1"])
+plot(qda_roc, col="purple", lwd=4, print.auc=TRUE, main="ROC-curve for qda-model")
+
+knn_probabilities <- ifelse(knn_model == 0, 1 - attributes(knn_model)$prob,attributes(knn_model)$prob)
+knn_roc <- roc(response = test$class, predictor = knn_probabilities)
+plot(knn_roc, col="turquoise", lwd=4, print.auc=TRUE, main="ROC curve knn-model")
+```
+
+
+### (iv) 
+
+Glm and QDA performs similar for ROC, while KKN performs significantly better. Would therefore choose the KNN-classifier
+for this problem.
+
+
+
 # Problem 4
+
+## a)
+
+
+## b) 
+
+(i): False,
+(ii): False,
+(iii): True,
+(iv): False
+
