@@ -38,6 +38,12 @@ library("rmarkdown")
 ## Introduction: Scope and purpose of your project
 
 
+The purpose of the project is to use machine learning to predict the price of Airbnb nights in Rome XX TBA. 
+
+The data set used is the rome_weekends.csv file from Kaggle (XX source). It was analyzed by X and X. 
+
+*summarize key findings*
+
 ## Descriptive data analysis/statistics
 
 
