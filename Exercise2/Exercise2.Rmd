@@ -1,9 +1,9 @@
 ---
-title: "Compulsory Exercise 2: Title (give your project an informative title)"
+title: "Compulsory Exercise 2: Predicting AirBnB-prices in Rome"
 author:
-- Full name for group member \#1.
-- Full name for group member \#2.
-- Full name for group member \#3.
+- Helle Villmones Haug
+- Hjalmar Jacob Vinje
+- Sanna Baug Warholm
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 header-includes: \usepackage{amsmath}
 output:
@@ -41,8 +41,11 @@ library("rmarkdown")
 ## Descriptive data analysis/statistics
 
 
-## Methods
 
+## Methods
+### Method 1 (Tree-based?)
+
+### Method 2 (Something more fancy, gradient boosting mabye?)
 
 ## Results and interpretation
 
