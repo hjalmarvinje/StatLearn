@@ -85,7 +85,7 @@ tendency, variability, and distribution of a data set.
 example).
 • Box plots of variables.}
 
-
+ 
 
 ## Methods
 
@@ -107,7 +107,7 @@ measure of model performance.
 
 ### Method 2 A deep learning model using ReLU
 
-ReLU introduces non-linearity in a manner similar to step functions, but it does so using linear segments instead of constant segments.In addition, ReLU uses only one step. 
+ReLU introduces non-linearity in a manner similar to step functions, but it does so using linear segments instead of constant segments.In addition, ReLU uses only one step \textcolor{red}{(can someone confirm?)}. The Keras library functions have features such as 
 
 
 ### Method 3 Random Forest model
