@@ -103,14 +103,12 @@ measure of model performance.
 • (optional) Consider and describe potential limitations of the methods and the chosen evaluation metrics.}
 
 
-### Method 1 Step Function
-
-### Method 2 A deep learning model using ReLU
+### Method 1 A deep learning model using ReLU
 
 ReLU introduces non-linearity in a manner similar to step functions, but it does so using linear segments instead of constant segments.In addition, ReLU uses only one step \textcolor{red}{(can someone confirm?)}. The Keras library functions have features such as 
 
 
-### Method 3 Random Forest model
+### Method 2 Random Forest model
 
 ## Results and interpretation
 
