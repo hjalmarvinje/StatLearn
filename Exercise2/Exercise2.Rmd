@@ -105,10 +105,15 @@ measure of model performance.
 
 ### Method 1 A deep learning model using ReLU
 
-ReLU introduces non-linearity in a manner similar to step functions, but it does so using linear segments instead of constant segments.In addition, ReLU uses only one step \textcolor{red}{(can someone confirm?)}. The Keras library functions have features such as 
+ReLU introduces non-linearity but it does so using linear segments. The Keras library functions have features such as X and X, which in many cases contribute to improved results. 
 
 
 ### Method 2 Random Forest model
+
+Random forest is a method that constructs several decision trees and then aggregates their predictions. It doesn't make any assumptions about the underlying distribution of the data, but works by iteratively partitioning the feature space and fitting decision trees to each partition. Each decision tree makes a prediction, and the final prediction is the average or the mode of the predictions of all the trees.
+
+We expected the random forest to be slightly worse than the ReLU based deep learning model. The results we got are XX. 
+
 
 ## Results and interpretation
 
