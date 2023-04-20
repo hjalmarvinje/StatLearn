@@ -66,7 +66,7 @@ The purpose of this project is two-fold:
 
 \begin{enumerate}
     \item To compare the performance of two different machine learning techniques: a deep learning model using the Keras library and a Random Forest model. We want to determine which model yields better prediction accuracy and whether there is a trade-off between performance and model complexity.
-    \item To uncover relationships between different variables and identify important predictors for the total rental price. This will help us draw insightful understanding in the domain of Airbnb rental prices, which can be beneficial for hosts and guests alike.
+    \item To uncover relationships between different variables and identify important predictors for the total rental price.
 \end{enumerate}
 
 Our audience consists of data scientists, machine learning enthusiasts, and Airbnb stakeholders who are interested in gaining a deeper understanding of the factors affecting rental prices and improving price prediction models. The main purpose of this project is to predict the total rental price of Airbnb listings with high accuracy, while also uncovering relationships between variables that can contribute to a better understanding of the underlying factors that influence rental prices. In essence, our project focuses on both prediction and inference, with the goal of achieving high prediction accuracy and gaining insights into the determinants of rental prices.
@@ -105,17 +105,30 @@ measure of model performance.
 
 ### Method 1 A deep learning model using ReLU
 
-ReLU introduces non-linearity but it does so using linear segments. The Keras library functions have features such as X and X, which in many cases contribute to improved results. 
+The ReLU activation function introduces non-linearity but it does so using linear segments. 
+
+The method is implemented with the following features: 
+\begin{itemize}
+  \item ReLU activation function
+  \item The model weights are updated 50 times on the entire data set
+  \item The batch size of the training data is 32
+  \item 20% of the data is used for training, the rest for validation
+  \item MSE is the loss function used to measure the difference between the predicted and actual values
+  \item MAE is used to measure the absolute difference between predicted and actual values
+  \item The model has 4 hidden layers with 60, 100, 20 and 20 units
+\end{itemize}
+
+The Keras library functions have features such as an optimizer ("Adam optimizer") and X, which in many cases contribute to improved results. 
 
 
 ### Method 2 Random Forest model
 
 Random forest is a method that constructs several decision trees and then aggregates their predictions. It doesn't make any assumptions about the underlying distribution of the data, but works by iteratively partitioning the feature space and fitting decision trees to each partition. Each decision tree makes a prediction, and the final prediction is the average or the mode of the predictions of all the trees.
 
-We expected the random forest to be slightly worse than the ReLU based deep learning model. The results we got are XX. 
-
 
 ## Results and interpretation
+
+We expected the random forest to be slightly worse than the ReLU based deep learning model. The results we got are XX. 
 
 
 ## Summary
