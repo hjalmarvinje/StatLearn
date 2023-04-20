@@ -1,5 +1,6 @@
 ---
 title: "Compulsory Exercise 2: Predicting AirBnB-prices in Rome"
+subtitle: "Group 3"
 author:
 - Helle Villmones Haug
 - Hjalmar Jacob Vinje
@@ -19,7 +20,7 @@ abstract: "The purpose of the project is to use machine learning to predict the 
 
 The data set used is the rome_weekends.csv file from Kaggle (XX source). It was analyzed by a Neutral network-model and a Random Forest-model. 
 
-Both models predicted the AirBnB-prices with high accuracy.
+Both models predicted the AirBnB-prices with a relatively high accuracy.
 
 Why are findings important/novel?"
 
@@ -54,7 +55,7 @@ library(knitr)
 
 ## Introduction: Scope and purpose of your project
 
-In this project, we aim to predict the total rental price of Airbnb listings in Rome during weekends, using a dataset called 'rome_weekends.csv' from Kaggle (https://www.kaggle.com/datasets/thedevastator/airbnb-prices-in-european-cities?select=rome_weekends.csv). This is a regression task, as we are predicting a continuous variable (total rental price) based on various features of the listings.
+In this project, we aim to predict the total rental price of Airbnb listings in Rome during weekends, using a dataset called 'rome_weekends.csv' from Kaggle (https://www.kaggle.com/datasets/thedevastator/airbnb-prices-in-european-cities?select=rome_weekends.csv). This is a regression task, as we are predicting a continuous variable (total rental price) based on various features of the listing. 
 
 The dataset is obtained from a public platform, Kaggle, where users can upload, share, and collaborate on data science projects. The data contains information on Airbnb listings in Rome, such as room type, whether the room is shared or private, and if the host is a superhost. Our goal is to utilize this information to predict the total rental price of a given listing and evaluate the performance of two machine learning models.
 
@@ -104,14 +105,14 @@ This is an overview of the columns in the dataset and their description, found o
 | lat                      | The latitude of the listing                                        | Numeric   |   
 
 
-In our context, the column $realSum$, the total price of the AirBnB listing, is the target, in other words, waht we want to predict. The other columns will be used to predict the $realSum$ for new listing.
+In our context, the column $realSum$, the total price of the AirBnB listing, is the target, in other words, what we want to predict. The other columns will be used to predict the $realSum$ for new listing.
 
 ### Loading the data
 
 We load the data by using the function $read_csv$-function. The data set was downloaded locally and placed in a folder in the repository, and not dowNloaded directly from the internet, therefore the 'data/rome_weekends.csv'-souce
 
 ```{r, echo = TRUE, eval = TRUE}
-# Read the data
+# Reading the data
 data <- read_csv('data/rome_weekends.csv', show_col_types = FALSE)
 colnames(data)
 ```
@@ -127,7 +128,7 @@ It is useful to get a quick overview of the central tendency, variability, and d
 close to normally distributed, beside from some very high or very low prices, it could be useful to perfrom a log()-operation on the target . In addition, the summary() function can be used to check the data for any unexpected values, such as negative values for variables that should be positive or large values for variables that should be small.
 
 ```{r, echo = TRUE, eval = TRUE}
-# Compute summary statistics for the realSum column
+# Computing summary statistics for the realSum column
 summary(data$realSum)
 range(data$realSum)
 ```
@@ -149,7 +150,7 @@ Here we show a scatter plot, a box plot and a histogram, to show other potensial
 Scatter plots are used to display the relationship between two continuous variables.
 ```{r, echo = TRUE, eval = TRUE}
 
-# Create a scatter plot of realSum vs. dist
+# Creating a scatter plot of realSum vs. dist
 plot(data$dist, data$realSum)
 ```
 This shows a small trend where AirBnBs with higher prices tends to be located closer to the city center.
@@ -158,7 +159,7 @@ This shows a small trend where AirBnBs with higher prices tends to be located cl
 ##### Histogram
 Histograms provide a visual representation of the distribution of a variable. 
 ```{r, echo = TRUE, eval = TRUE}
-# Create histograms of the person_capacity and cleanliness_rating columns
+# Creating histograms of the person_capacity and cleanliness_rating columns
 hist(data$person_capacity)
 hist(data$cleanliness_rating)
 ```
@@ -168,14 +169,14 @@ The first plot shows that the most common person capacity for a AirBnB is 2, fol
 ##### Box plot
 Box plots are used to display the distribution of a continuous variable.
 ```{r, echo = TRUE, eval = TRUE}
-# Create a box plot of the realSum column
+# Creating a box plot of the realSum column
 boxplot(data$realSum, main = "Box Plot of Airbnb Listing Prices")
 ```
 This plot shows that most of the prices are in the same price range (visualized by the black straight line). Then, there are fewer and fewer AirBnBs with higher and higher prices. We don't see the same trend with lower prices.
 
 
 ```{r, echo = FALSE, eval = TRUE, results='hide'}
-# Compute the correlation matrix of all numeric columns
+# Computing the correlation matrix of all numeric columns
 cor(data[, sapply(data, is.numeric)])
 ```
 
@@ -186,7 +187,7 @@ Data pre-processing is important in machine learning because it helps to improve
 
 The methods we are using require numerical variables, therefore we convert the categorical- and numeric values we will use.
 ```{r, echo = TRUE, eval = TRUE, results='hide'}
-# Convert non-numeric variables into numeric variables
+# Converting non-numeric variables into numeric variables
 data$room_type <- as.numeric(factor(data$room_type))
 data$room_shared <- as.numeric(data$room_shared)
 data$room_private <- as.numeric(data$room_private)
@@ -196,7 +197,7 @@ data$host_is_superhost <- as.numeric(data$host_is_superhost)
 
 Next, we need to split the dataset into a training- and a test set, for traning and testing the two models we will use: 
 ```{r, echo = TRUE, eval = TRUE, results='hide'}
-# Split the dataset into training and test sets
+# Splitting the dataset into training and test sets
 set.seed(42)
 sample_size <- floor(0.8 * nrow(data))
 train_index <- sample(seq_len(nrow(data)), size = sample_size)
@@ -210,19 +211,21 @@ test <- data[-train_index, ]
 \newpage
 ## Methods
 
-• Explain briefly how each method works, what its strengths and weaknesses are, both in general but
+\textcoor{green}{• Explain briefly how each method works, what its strengths and weaknesses are, both in general but
 also in the light of your project (how suitable is the method in your case?).
 3
 • Describe which hyperparameters are optimized for the methods (e.g., a shrinkage factor is a hyperparameter in Lasso).
 • Describe clearly how you evaluate the performance of the different models and methods (accuracy, MSE,
 misclassification error, CV error,. . . ). Explain how each metric is calculated, and why it is a useful
 measure of model performance.
-• (optional) Consider and describe potential limitations of the methods and the chosen evaluation metrics.
+• (optional) Consider and describe potential limitations of the methods and the chosen evaluation metrics.}
 
 
 ### Method 1 A deep learning model using ReLU
 
-The ReLU activation function introduces non-linearity but it does so using linear segments. 
+Since the neural network has several hidden layers, it can be classified as a deep network, which is shown to handle some complex tasks well in the course curriculum. In this case, it might be beneficial as the AirBnB prices depend on a variety of factors and relationships. However, it might be overkill as the data set is not too large.  
+
+The ReLU activation function introduces non-linearity but it does so using linear segments. This makes it relatively less computationally expensive than completely non-linear models like the sigmoid. This makes it well-suited for large-scale neural networks and deep learning. The ReLU activation function sets negative inputs to zero, which deactivates the corresponding neurons. This makes the algorithm more efficient and can also help in reducing overfitting in some cases. 
 
 The method is implemented with the following features: 
 \begin{itemize}
@@ -235,10 +238,10 @@ The method is implemented with the following features:
   \item The model has 4 hidden layers with 60, 100, 20 and 20 units
 \end{itemize}
 
-The Keras library functions have features such as an optimizer ("Adam optimizer") and X, which in many cases contribute to improved results. 
+The Keras library functions have features such as an optimizer ("Adam optimizer"), which in many cases contribute to improved results. 
 
 ```{r, echo = TRUE, eval = TRUE, tidy = TRUE}
-# Set up the model architecture
+# Setting up the model architecture
 model <- keras_model_sequential() %>%
   layer_dense(units = 60, activation = 'relu', input_shape = ncol(train) - 1) %>%
   layer_dense(units = 100, activation = 'relu') %>%
@@ -246,14 +249,22 @@ model <- keras_model_sequential() %>%
   layer_dense(units = 20, activation = 'relu') %>%
   layer_dense(units = 1)
 
-# Compile the model
+install.packages("Rtools")
+install.packages("remotes")
+remotes::install_github("rstudio/tensorflow")
+library(tensorflow)
+install_tensorflow(version = "2.0.0b1", method = "conda", envname = "r-reticulate")
+library(keras)
+
+
+# Compiling the model
 model %>% compile(
   loss = "mean_squared_error",
   optimizer = optimizer_adam(learning_rate = 0.0001),
   metrics = c("mean_absolute_error")
 )
 
-# Train the model
+# Training the model
 history <- model %>% fit(
   as.matrix(train %>% select(-realSum)), as.matrix(train[["realSum"]]),
   epochs = 50,
@@ -262,32 +273,26 @@ history <- model %>% fit(
   verbose = 1
 )
 
-# Evaluate the model on the test set
+# Evaluating the model on the test set
 model %>% evaluate(as.matrix(test %>% select(-realSum)), as.matrix(test[["realSum"]]))
 
-# Make predictions using the trained model
+# Making predictions using the trained model
 predictions <- model %>% predict(as.matrix(test %>% select(-realSum)))
 ```
 
 
 ### Method 2 Random Forest model
 
-Random forest is a method that constructs several decision trees and then aggregates their predictions. It doesn't make any assumptions about the underlying distribution of the data, but works by iteratively partitioning the feature space and fitting decision trees to each partition. Each decision tree makes a prediction, and the final prediction is the average or the mode of the predictions of all the trees.
+Random forest is a method that constructs several decision trees and then aggregates their predictions. It doesn't make any assumptions about the underlying distribution of the data, but works by partitioning the feature space and fitting decision trees to each partition in iterations. Each decision tree makes a prediction, and the final prediction is the average of the predictions of all the trees.
 
 ```{r, echo = TRUE, eval = TRUE, tidy = TRUE}
-# Train the random forest model
+# Training the random forest model
 rf_model <- randomForest(realSum ~ ., data = train, ntree = 800, mtry = 4, importance = TRUE)
 
-# Make predictions using the trained random forest model
+# Making predictions using the trained random forest model
 predictions_rf <- predict(rf_model, newdata = test)
 ```
 
-It is interesting to see which attributes is the most important ones in the classification, this we can do with the varImp()-function for Random Forest.
-```{r, echo = TRUE, eval = TRUE, tidy = TRUE}
-varImp(rf_model, scale = TRUE)
-
-```
-As we can see, it's $lat$ that is the most important feature, followed by the number of $bedrooms$ and $person\_capacity$.
 
 \newpage
 ## Results and interpretation
@@ -297,6 +302,10 @@ We expected the random forest to be slightly worse than the ReLU based deep lear
 ### Results for model with deep learning
 
 ```{r, echo = TRUE, eval = TRUE}
+
+# Calculate the mean squared error
+mae <- mean(abs(test$realSum - predictions_rf))
+print(paste("Mean Absolute Error:", mae))
 
 # Add predictions to the test dataset
 test$predicted_realSum <- predictions
@@ -338,5 +347,13 @@ ggplot(test, aes(x = realSum, y = predicted_realSum)) +
   ylim(0, max_val) +
   coord_fixed()
 ```
+
+
+It is interesting to see which attributes is the most important ones in the classification, this we can do with the varImp()-function for Random Forest.
+```{r, echo = TRUE, eval = TRUE, tidy = TRUE}
+varImp(rf_model, scale = TRUE)
+
+```
+As we can see, it's $lat$ that is the most important feature, followed by the number of $bedrooms$ and $person\_capacity$.
 
 ## Summary
