@@ -13,6 +13,13 @@ data <- data %>%
   select(-c()) %>%
   mutate_if(is.character, as.factor)
 
+summary(data$realSum)
+mean(data$realSum)
+median(data$realSum)
+range(data$realSum)
+sd(data$realSum)
+var(data$realSum)
+
 
 # Split the data into training and testing sets
 set.seed(123)

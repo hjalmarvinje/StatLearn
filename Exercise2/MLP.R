@@ -4,7 +4,7 @@ library(tidyverse)
 library(caret)
 
 # Read the dataset
-data <- read_csv("Exercise2/data/rome_weekends.csv")
+data <- read_csv("data/rome_weekends.csv")
 
 # Convert non-numeric variables into numeric variables
 data$room_type <- as.numeric(factor(data$room_type))
@@ -68,3 +68,4 @@ ggplot(test, aes(x = realSum, y = predicted_realSum)) +
   xlim(0, max_val) +
   ylim(0, max_val) +
   coord_fixed()
+
